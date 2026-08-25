@@ -979,7 +979,7 @@ def parse(json_path, output_path):
     :returns: a list of CDP domain objects
     """
     global current_version
-    with json_path.open() as json_file:
+    with json_path.open(encoding="utf-8") as json_file:
         schema = json.load(json_file)
     version = schema["version"]
     assert (version["major"], version["minor"]) == ("1", "3")
@@ -998,7 +998,7 @@ def generate_init(init_path, domains):
     :param list[tuple] modules: a list of modules each represented as tuples
         of (name, list_of_exported_symbols)
     """
-    with init_path.open("w") as init_file:
+    with init_path.open("w", encoding="utf-8") as init_file:
         init_file.write(INIT_HEADER)
         init_file.write(
             "from . import ({})".format(", ".join(domain.module for domain in domains))
@@ -1018,7 +1018,7 @@ def generate_docs(docs_path, domains):
     # Generate document for each domain
     for domain in domains:
         doc = docs_path / f"{domain.module}.rst"
-        with doc.open("w") as f:
+        with doc.open("w", encoding="utf-8") as f:
             f.write(domain.generate_sphinx())
 
 
@@ -1077,7 +1077,7 @@ def selfgen():
         for domain in domains:
             logger.info("Generating module: %s → %s.py", domain.domain, domain.module)
             module_path = output_path / f"{domain.module}.py"
-            with module_path.open("w") as module_file:
+            with module_path.open("w", encoding="utf-8") as module_file:
                 module_file.write(domain.generate_code())
 
         generate_init(output_path / "__init__.py", domains)
